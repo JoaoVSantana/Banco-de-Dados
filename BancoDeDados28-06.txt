@@ -1,0 +1,163 @@
+CREATE DATABASE aluguel_veiculos_db;
+
+SHOW DATABASES;
+
+use aluguel_veiculos_db;
+
+
+-- Grupo ----------------------
+
+CREATE TABLE `grupo` (
+	`id` int unsigned NOT NULL auto_increment,
+	`valor_dia` float NOT NULL,
+    `ano_inicial` varchar(4) NOT NULL,
+    `ano_final` varchar(4) NOT NULL, 
+    `tipo` varchar(20) NOT NULL,
+    `completo` boolean,
+     primary key(id)
+);
+
+INSERT INTO grupo (valor_dia, ano_inicial, ano_final, tipo, completo)
+VALUES (190, "2020", "2021", "TOYOTA", TRUE);
+
+SELECT * FROM grupo;
+
+DELETE FROM grupo WHERE id = 1;
+
+INSERT INTO grupo(valor_dia, ano_inicial, ano_final, tipo, completo)
+VALUES ("210", "2010", "2020", "Chevrolet", TRUE);
+
+UPDATE grupo
+SET ano_inicial = '2014' WHERE id = 2;
+
+
+-- Carro ----------------------
+
+CREATE TABLE `carro`(
+	`id` int unsigned NOT NULL auto_increment, 
+    `nome` varchar(50) NOT NULL,
+    `cor` varchar(20) NOT NULL,
+    `dta_ultima_revisao` datetime,
+    `marca` varchar(15), 
+    `ano` varchar(4) NOT NULL, 
+    `completo` boolean, 
+    `tipo` varchar(20) NOT NULL,
+    `fk_grupo` int unsigned NOT NULL,
+    primary key(id),
+	FOREIGN KEY (fk_grupo) REFERENCES grupo (id)
+);
+
+INSERT INTO carro (nome, cor, dta_ultima_revisao, marca, ano, completo, tipo, fk_grupo)
+VALUES ("ONIX PLUS", "VERMELHO", now(), "CHEVROLET", "2019", TRUE, "SEDAN", 2);
+
+SELECT * FROM carro;
+
+DELETE FROM carro WHERE id = 1;
+
+INSERT INTO carro (nome, cor, dta_ultima_revisao, marca, ano, completo, tipo, fk_grupo)
+VALUES ("ETIOS", "MARROM", now(), "TOYOTA", "2019", TRUE, "HATCH", 2);
+
+UPDATE carro
+SET ano = '2020'
+WHERE id = 2;
+
+-- Pessoa ---------------------
+
+CREATE TABLE `pessoa` (
+	`id` int unsigned NOT NULL auto_increment,
+	`nome` varchar(50) NOT NULL,
+	`cpf` varchar(14) NOT NULL,
+    `cnh` varchar(20) NOT NULL,
+    `telefone`varchar(15) NOT NULL,
+    `email` varchar(60) NOT NULL,
+    primary key(id)
+);
+
+INSERT INTO pessoa (nome, cpf, cnh, telefone, email)
+VALUES ("Alberto", "111.111.111-11", "11223344", "777", "emailteste");
+
+SELECT * FROM pessoa;
+
+DELETE FROM pessoa WHERE id = 1;
+
+INSERT INTO pessoa (nome, cpf, cnh, telefone, email)
+VALUES ("Jose", "222.222.222-22", "55667788", "222", "emailtestedois");
+
+UPDATE pessoa
+SET cpf = '333.333.333-33' WHERE id = 2;
+
+
+-- Usuário ----------------------
+
+CREATE TABLE `usuario` (
+	`id` int unsigned NOT NULL auto_increment,
+    `login` varchar(50) NOT NULL,
+    `senha` varchar(50) NOT NULL,
+    `conf_email` boolean,
+    `fk_pessoa` int unsigned NOT NULL,
+    primary key(id),
+	FOREIGN KEY (fk_pessoa) REFERENCES pessoa (id)
+);
+
+INSERT INTO usuario(login, senha, conf_email, fk_pessoa)
+VALUES ("Doido", "senha", true, 2 );
+
+SELECT * FROM usuario;
+
+DELETE FROM usuario WHERE id = 1;
+
+INSERT INTO usuario(login, senha, conf_email, fk_pessoa)
+VALUES ("Maluco", "senha2", true, 2);
+
+UPDATE usuario
+SET senha = "fraca" WHERE id = 2;
+
+
+-- Aluguel ----------------------
+
+CREATE TABLE `aluguel` (
+	`id` int unsigned NOT NULL auto_increment,
+    `prazo` datetime,
+    `fk_carro` int unsigned NOT NULL,
+    `fk_pessoa` int unsigned NOT NULL,
+    primary key(id),
+	FOREIGN KEY (fk_carro) REFERENCES carro (id),
+	FOREIGN KEY (fk_pessoa) REFERENCES pessoa (id)
+);
+
+INSERT INTO aluguel(prazo, fk_carro, fk_pessoa)
+VALUES ("2023-03-25", 2, 2);
+
+SELECT * FROM aluguel;
+
+DELETE FROM aluguel WHERE id = 1;
+
+INSERT INTO aluguel(prazo, fk_carro, fk_pessoa)
+VALUES ("2023-05-17", 2, 2);
+
+UPDATE aluguel
+SET prazo = "2023-05-14" WHERE id = 2;
+
+
+-- Pagamento ----------------------
+
+CREATE TABLE `pagamento` (
+	`id` int unsigned NOT NULL auto_increment,
+    `preco_total` float NOT NULL,
+    `forma_pagamento` varchar(15) NOT NULL,
+    primary key (id)
+);
+
+INSERT INTO pagamento(preco_total, forma_pagamento)
+VALUES ("420.0", "cartao");
+
+SELECT * FROM pagamento;
+
+DELETE FROM pagamento WHERE id = 1;
+
+INSERT INTO pagamento(preco_total, forma_pagamento)
+VALUES ("380.0", "débito");
+
+UPDATE pagamento
+SET forma_pagamento = "cheque" WHERE id = 2;
+
